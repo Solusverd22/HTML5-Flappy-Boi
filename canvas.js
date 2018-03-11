@@ -1,26 +1,10 @@
 var canvas = document.querySelector('canvas');
 var c = canvas.getContext('2d');
+var flash = false;
+var timerStart = 0;
+var d = new Date();
+var randomTime = d.getTime();
 
-////three quads
-//c.fillRect(100, 100, 100, 100);
-//c.fillStyle = 'blue';
-//c.fillRect(400, 100, 100, 200);
-//c.fillRect(300, 300, 100, 100);
-//console.log(canvas);
-
-////line
-//c.beginPath();
-//c.moveTo(50, 300);
-//c.lineTo(300, 100);
-//c.strokeStyle = 'green';
-//c.stroke();
-
-//for (var i = 0; i < 10; i++) {
-//    c.beginPath();
-//    c.arc(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 30, 0, Math.PI * 2, false);
-//    c.strokeStyle = 'lightblue';
-//    c.stroke();
-//}
 var input = {
     x: undefined,
     y: undefined
@@ -67,11 +51,9 @@ function Circle(x, y, radius, colour) {
     }
 
     this.update = function () {
-        //the cos and sin functions create circular movement
-        this.x = 400 + (300 * Math.cos(d.getTime()/1000));
-        this.y = 400 + (300 * Math.sin(d.getTime()/1000));
-
-        this.draw();
+        //assigned randomly
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight;
     }
 }
 
@@ -81,17 +63,18 @@ function checkClicked(x,y,r) {
     var c = (xDisp * xDisp) + (yDisp * yDisp);
     if (Math.abs(c) < (r * r)) {
         return true;
+        randomTime = 0; //updates circle position
     } else {
         return false;
     }  
 }
 
 function animateFlash() {
-    h = window.innerHeight;
-    w = window.innerWidth;
     if (flash) {
+        h = window.innerHeight;
+        w = window.innerWidth;
         if ((d.getTime() - timerStart) < 100) {
-            c.fillStyle = 'red';
+            c.fillStyle = 'orange';
             c.fillRect(0, 0, w, h);
         }else if (d.getTime() - timerStart < 200) {
             c.fillStyle = 'white';
@@ -104,9 +87,6 @@ function animateFlash() {
 }
 
 var circle = new Circle(300, 300, 40, 'white');
-var flash = false;
-var timerStart = 0;
-var d = new Date();
 
 function animate() {
     requestAnimationFrame(animate);
@@ -117,11 +97,36 @@ function animate() {
     c.clearRect(0, 0, innerWidth, innerHeight);
     //update time
     d = new Date();
+    circle.draw();
 
     animateFlash();
-
-    circle.update();
+    if(d.getTime() > randomTime) {
+        circle.update();
+        randomTime = d.getTime() + 500 +(Math.random() * 1000);
+    }
+    
 }
 
 animate();
 
+
+////three quads
+//c.fillRect(100, 100, 100, 100);
+//c.fillStyle = 'blue';
+//c.fillRect(400, 100, 100, 200);
+//c.fillRect(300, 300, 100, 100);
+//console.log(canvas);
+
+////line
+//c.beginPath();
+//c.moveTo(50, 300);
+//c.lineTo(300, 100);
+//c.strokeStyle = 'green';
+//c.stroke();
+
+//for (var i = 0; i < 10; i++) {
+//    c.beginPath();
+//    c.arc(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 30, 0, Math.PI * 2, false);
+//    c.strokeStyle = 'lightblue';
+//    c.stroke();
+//}
